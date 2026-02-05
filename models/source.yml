@@ -1,0 +1,20 @@
+version 2:
+sources:
+  - name: ecommerce_source
+    tables:
+      - name: users
+        description: "Thông tin về khách hàng"
+        columns:
+            - name: id
+              description: "ID duy nhất của khách hàng"
+              tests:
+                - unique
+                - not_null
+      - name: products
+        description: "Danh sách sản phẩm"
+        
+      - name: carts
+        description: "Thông tin giỏ hàng của người dùng"
+        
+      - name: comments
+        description: "Bình luận của người dùng về sản phẩm"

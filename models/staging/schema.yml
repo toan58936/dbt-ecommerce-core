@@ -1,0 +1,58 @@
+version: 2
+
+models:
+  # 1. Kiểm tra bảng Carts Header
+  - name: stg_carts
+    description: "Thông tin tổng quan của giỏ hàng (Header)"
+    columns:
+      - name: cart_id
+        description: "Khóa chính của giỏ hàng"
+        tests:
+          - unique
+          - not_null
+      - name: user_id
+        tests:
+          - not_null
+          # Kiểm tra quan hệ: User ID trong giỏ hàng phải tồn tại trong bảng Users
+          - relationships:
+              to: ref('stg_user')
+              field: user_id
+
+  # 2. Kiểm tra bảng Cart Items (Chi tiết)
+  - name: stg_cart_items
+    description: "Chi tiết từng sản phẩm trong giỏ hàng"
+    columns:
+      - name: cart_item_id
+        description: "Khóa chính nhân tạo (Surrogate Key)"
+        tests:
+          - unique
+          - not_null
+      - name: cart_id
+        tests:
+          - not_null
+          # Kiểm tra quan hệ: Item này phải thuộc về một Cart có thật
+          - relationships:
+              to: ref('stg_carts')
+              field: cart_id
+      - name: product_id
+        tests:
+          - not_null
+          # Kiểm tra quan hệ: Sản phẩm phải có trong danh mục
+          - relationships:
+              to: ref('stg_products')
+              field: product_id
+
+  # 3. Tiện tay test luôn bảng Users và Products
+  - name: stg_user
+    columns:
+      - name: user_id
+        tests:
+          - unique
+          - not_null
+
+  - name: stg_products
+    columns:
+      - name: product_id
+        tests:
+          - unique
+          - not_null

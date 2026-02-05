@@ -6,14 +6,13 @@ renamed as (
     select
         -- 1. Identifiers
         id as comment_id,
-        postId as product_id, -- Mapping postId -> product_id
+        "postId" as product_id, -- Trong DummyJSON, postId chính là ID của sản phẩm
 
         -- 2. Content & Metrics
-        body as comment_body,
-        likes,
+        body as comment_text,
+        likes::int as likes_count,
 
-        -- 3. Complex Data (User info đang nằm trong JSON object)
-        -- Postgres yêu cầu ngoặc kép "user" vì trùng tên từ khóa hệ thống
+        -- 3. Thông tin người dùng (Lưu ý: "user" phải để trong ngoặc kép vì là từ khóa hệ thống)
         cast("user" as jsonb) as user_info, 
 
         -- 4. Metadata
@@ -22,4 +21,12 @@ renamed as (
     from source
 )
 
-select * from renamed
+select
+    comment_id,
+    product_id,
+    comment_text,
+    likes_count,
+    
+    {{ extract_comment_user_info('user_info') }},
+    loaded_at
+from renamed

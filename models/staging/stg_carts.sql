@@ -4,22 +4,22 @@ with source as (
 
 renamed as (
     select
-        -- 1. IDs
+        -- 1. Identifiers
         id as cart_id,
         userId as user_id,
 
-        -- 2. Metrics (Số liệu tổng quan)
-        total as cart_total,
-        discountedTotal as discounted_total,
-        totalProducts as unique_products_count, -- Số lượng mã sản phẩm khác nhau
-        totalQuantity as total_items_quantity,  -- Tổng số lượng hàng trong giỏ
+        -- 2. Metrics (Header Level)
+        -- Ép kiểu numeric để tính toán tiền tệ chính xác
+        cast(total as numeric(16,2)) as cart_total_price,
+        cast("discountedTotal" as numeric(16,2)) as cart_discounted_price,
+        
+        cast("totalProducts" as int) as total_unique_items, -- Số loại sản phẩm (SKUs)
+        cast("totalQuantity" as int) as total_item_quantity, -- Tổng số lượng hàng
 
-        -- 3. Complex Data (Cột khó nhất - Giữ nguyên dưới dạng JSONB)
-        -- Lưu ý: Neon/Postgres hỗ trợ JSONB rất mạnh để truy vấn sau này
-        cast(products as jsonb) as cart_items_json,
-
-        -- 4. Metadata
+        -- 3. Metadata
         _airbyte_extracted_at as loaded_at
+
+        -- [LOẠI BỎ]: products (Vì sẽ xử lý ở bảng stg_cart_items)
 
     from source
 )

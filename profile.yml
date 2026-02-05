@@ -1,0 +1,13 @@
+ecommerce_core:
+  target: dev
+  outputs:
+    dev:
+      type: postgres
+      threads: 10
+      host: ep-wild-thunder-ahs1p0nz-pooler.c-3.us-east-1.aws.neon.tech
+      port: 5432
+      user: neondb_owner
+      pass: npg_Lt1sgNd6oCkz
+      dbname: ecomdb
+      schema: dbt_dev
+      sslmode: require

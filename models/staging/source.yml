@@ -1,6 +1,8 @@
 version 2:
 sources:
   - name: ecommerce_source
+    database: ecomdb
+    schema: public
     tables:
       - name: users
         description: "Thông tin về khách hàng"

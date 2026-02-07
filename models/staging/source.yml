@@ -1,4 +1,5 @@
-version : 2
+version: 2 # CHANGED: normalize key formatting
+
 sources:
   - name: ecommerce_source
     database: ecomdb
@@ -7,16 +8,38 @@ sources:
       - name: users
         description: "Thông tin về khách hàng"
         columns:
-            - name: id
-              description: "ID duy nhất của khách hàng"
-              tests:
-                - unique
-                - not_null
+          - name: id
+            description: "ID duy nhất của khách hàng"
+            tests:
+              - unique
+              - not_null
+
       - name: products
         description: "Danh sách sản phẩm"
-        
+        columns:
+          - name: id
+            description: "ID duy nhất của sản phẩm"
+            tests:
+              - unique
+              - not_null
+        # CHANGED: add source tests for products.id
+
       - name: carts
         description: "Thông tin giỏ hàng của người dùng"
-        
+        columns:
+          - name: id
+            description: "ID duy nhất của giỏ hàng"
+            tests:
+              - unique
+              - not_null
+        # CHANGED: add source tests for carts.id
+
       - name: comments
         description: "Bình luận của người dùng về sản phẩm"
+        columns:
+          - name: id
+            description: "ID duy nhất của bình luận"
+            tests:
+              - unique
+              - not_null
+        # CHANGED: add source tests for comments.id

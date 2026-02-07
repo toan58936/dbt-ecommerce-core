@@ -1,5 +1,5 @@
 with source as (
-    select 
+    select
         id as cart_id,
         "userId" as user_id,
         cast(products as jsonb) as products_json,
@@ -11,19 +11,24 @@ flattened as (
     select
         cart_id,
         user_id,
-        -- Hàm nhân bản dòng cart_id cho mỗi sản phẩm
-        jsonb_array_elements(coalesce(products_json, '[]'::jsonb)) as item,
+        -- OLD: jsonb_array_elements(coalesce(products_json, '[]'::jsonb)) as item
+        -- CHANGED: use LATERAL + WITH ORDINALITY to avoid duplicate cart_item_id
+        item.value as item,
+        item.idx as idx,
         _airbyte_extracted_at
     from source
+    cross join lateral jsonb_array_elements(coalesce(products_json, '[]'::jsonb)) with ordinality as item(value, idx)
 )
 
 select
-    -- 1. Surrogate Key (Nâng cấp với COALESCE)
-    -- Đảm bảo nếu id bị null thì thay bằng chuỗi rỗng '', giúp md5 luôn hoạt động
-    md5(cast(concat(
-        coalesce(cast(cart_id as text), ''), 
-        '-', 
-        coalesce(cast(item ->> 'id' as text), '')
+    -- 1. Surrogate Key
+    -- OLD: md5(concat(cart_id, '-', item ->> 'id'))
+    -- CHANGED: add idx to guarantee uniqueness when same product repeats in a cart
+    md5(cast(concat_ws(
+        '-',
+        coalesce(cast(cart_id as text), ''),
+        coalesce(cast(item ->> 'id' as text), ''),
+        coalesce(cast(idx as text), '')
     ) as text)) as cart_item_id,
 
     -- 2. Foreign Keys
@@ -33,7 +38,7 @@ select
 
     -- 3. Item Metrics
     cast(item ->> 'quantity' as int) as quantity,
-    cast(item ->> 'price' as numeric(16,2)) as price_at_purchase, -- Giá chốt tại thời điểm mua
+    cast(item ->> 'price' as numeric(16,2)) as price_at_purchase, -- price at purchase time
     cast(item ->> 'total' as numeric(16,2)) as line_total,
     
     cast(item ->> 'discountPercentage' as numeric(5,2)) as line_discount_percentage,

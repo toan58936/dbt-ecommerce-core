@@ -57,19 +57,24 @@ models:
           - unique
           - not_null
 
-
   - name: stg_comments
     columns:
       - name: comment_id
         tests:
           - unique
           - not_null
-      - name: product_id
+      - name: post_id
         tests:
           - not_null
+
+
       - name: user_id
         tests:
           - not_null
+          # CHANGED: thêm kiểm tra quan hệ tới users
+          - relationships:
+              to: ref('stg_user')
+              field: user_id
 
   - name: stg_product_reviews
     columns:
@@ -80,4 +85,6 @@ models:
       - name: product_id
         tests:
           - not_null
-
+      - name: review_date
+        tests:
+          - not_null # CHANGED: đảm bảo review_date luôn có giá trị

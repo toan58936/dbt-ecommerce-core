@@ -11,7 +11,7 @@ with source as (
 flattened as (
     select
         product_id,
-        -- Hàm 'đập' mảng: Biến 1 dòng sản phẩm thành N dòng review
+        -- Hàm "đập" mảng: biến 1 dòng sản phẩm thành N dòng review
         jsonb_array_elements(reviews_raw) as review_item,
         _airbyte_extracted_at
     from source
@@ -27,7 +27,7 @@ select
         coalesce(review_item ->> 'date', ''),
         coalesce(review_item ->> 'comment', ''),
         coalesce(review_item ->> 'rating', '')
-    ) as text)) as review_id, -- CHANGED: add comment/rating + coalesce to reduce duplicates
+    ) as text)) as review_id, -- CHANGED: thêm comment/rating + coalesce để giảm trùng
     
     -- 2. Khóa ngoại (Foreign Key)
     product_id,

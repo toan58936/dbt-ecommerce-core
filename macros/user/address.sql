@@ -8,6 +8,10 @@
     {{ json_column }} ->> 'country' as country,
 
     -- Bóc tách coordinates (JSON lồng nhau)
-    cast({{ json_column }} -> 'coordinates' ->> 'lat' as float) as latitude,
-    cast({{ json_column }} -> 'coordinates' ->> 'lng' as float) as longitude
+    -- OLD: cast({{ json_column }} -> 'coordinates' ->> 'lat' as float) as latitude
+    -- CHANGED: nullif để tránh lỗi khi rỗng
+    cast(nullif({{ json_column }} -> 'coordinates' ->> 'lat', '') as float) as latitude,
+    -- OLD: cast({{ json_column }} -> 'coordinates' ->> 'lng' as float) as longitude
+    -- CHANGED: nullif để tránh lỗi khi rỗng
+    cast(nullif({{ json_column }} -> 'coordinates' ->> 'lng', '') as float) as longitude
 {% endmacro %}

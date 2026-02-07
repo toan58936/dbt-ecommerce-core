@@ -24,9 +24,9 @@ renamed as (
         _airbyte_extracted_at as loaded_at
 
         -- [ĐÃ LOẠI BỎ TOÀN BỘ]:
-        -- hair, eyeColor, bloodGroup, height, weight (Rác vật lý)
-        -- bank, crypto, ssn, ein (Rủi ro bảo mật & Tài chính)
-        -- macAddress, ip, userAgent (Rác kỹ thuật - trừ khi cần IP để map location)
+        -- hair, eyeColor, bloodGroup, height, weight (rác vật lý)
+        -- bank, crypto, ssn, ein (rủi ro bảo mật & tài chính)
+        -- macAddress, ip, userAgent (rác kỹ thuật - trừ khi cần IP để map location)
 
     from source
 ),
@@ -42,11 +42,11 @@ final as (
         age,
         birth_date,
 
-        -- SỬ DỤNG MACRO: Address (Cực quan trọng cho Map Chart)
+        -- SỬ DỤNG MACRO: Address (cực quan trọng cho Map Chart)
         {{ extract_user_address('address_info') }},
 
-        -- SỬ DỤNG MACRO: Company (Lấy Name & Title để phân tích B2B)
-        -- (Macro này sẽ lấy cả địa chỉ cty, nhưng không sao, thừa chút không đáng kể)
+        -- SỬ DỤNG MACRO: Company (lấy name & title để phân tích B2B)
+        -- (Macro này sẽ lấy cả địa chỉ cty, thừa chút không đáng kể)
         {{ extract_company_info('company_info') }},
 
         loaded_at
@@ -60,7 +60,7 @@ select
     gender,
     age,
     
-    -- Chỉ select các cột cần thiết từ kết quả Macro (Flattening triệt để)
+    -- Chỉ select các cột cần thiết từ kết quả Macro (flattening triệt để)
     city,
     state,
     country,

@@ -1,7 +1,7 @@
 with source as (
     select 
         id as cart_id,
-        userId as user_id,
+        "userId" as user_id,
         cast(products as jsonb) as products_json,
         _airbyte_extracted_at
     from {{ source('ecommerce_source', 'carts') }}
@@ -12,7 +12,7 @@ flattened as (
         cart_id,
         user_id,
         -- Hàm nhân bản dòng cart_id cho mỗi sản phẩm
-        jsonb_array_elements(products_json) as item,
+        jsonb_array_elements(coalesce(products_json, '[]'::jsonb)) as item,
         _airbyte_extracted_at
     from source
 )

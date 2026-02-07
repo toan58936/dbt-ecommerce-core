@@ -20,7 +20,14 @@ flattened as (
 select
     -- 1. Tạo Surrogate Key (ID duy nhất cho mỗi review)
     -- Dùng MD5 hash các trường unique để tạo ID cố định
-    md5(cast(concat(product_id, '-', review_item ->> 'reviewerEmail', '-', review_item ->> 'date') as text)) as review_id,
+    md5(cast(concat_ws(
+        '-',
+        product_id,
+        coalesce(review_item ->> 'reviewerEmail', ''),
+        coalesce(review_item ->> 'date', ''),
+        coalesce(review_item ->> 'comment', ''),
+        coalesce(review_item ->> 'rating', '')
+    ) as text)) as review_id, -- CHANGED: add comment/rating + coalesce to reduce duplicates
     
     -- 2. Khóa ngoại (Foreign Key)
     product_id,

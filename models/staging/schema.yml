@@ -56,3 +56,28 @@ models:
         tests:
           - unique
           - not_null
+
+
+  - name: stg_comments
+    columns:
+      - name: comment_id
+        tests:
+          - unique
+          - not_null
+      - name: product_id
+        tests:
+          - not_null
+      - name: user_id
+        tests:
+          - not_null
+
+  - name: stg_product_reviews
+    columns:
+      - name: review_id
+        tests:
+          - unique
+          - not_null
+      - name: product_id
+        tests:
+          - not_null
+

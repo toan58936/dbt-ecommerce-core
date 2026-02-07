@@ -6,7 +6,7 @@ renamed as (
     select
         -- 1. Identifiers
         id as cart_id,
-        userId as user_id,
+        "userId" as user_id,
 
         -- 2. Metrics (Header Level)
         -- Ép kiểu numeric để tính toán tiền tệ chính xác
